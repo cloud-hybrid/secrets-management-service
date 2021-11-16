@@ -1,7 +1,0 @@
-{
-    "httpMethod": "POST",
-    "body": "{\"JWT\", \"X.Y.Z\"}",
-    "headers": {
-        "Authorization": "Bearer X.Y.Z"
-    }
-}
