@@ -1,0 +1,17 @@
+version = 0.1
+
+[default.global.parameters]
+stack_name = "Secrets-Rotation-Service-CFN-Stack"
+
+[default.deploy.parameters]
+stack_name = "Secrets-Rotation-Service-CFN-Stack"
+s3_bucket = "secrets-rotation-service-cfn-stack-s3-bucket"
+s3_prefix = "Artifacts"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+# --> tags = ""
+
+[default.build.parameters]
+container_env_var_file = "env.json"
+no_beta_features = false

@@ -1,0 +1,29 @@
+version: 0.2
+
+.Pointers:
+    &Install: [
+        "npm install"
+    ]
+
+    &Build: [
+        "npm install --production",
+        "npm run test",
+        "npm prune --production"
+    ]
+
+    &Package: [
+        "aws cloudformation package --template template.yaml --s3-bucket $S3_BUCKET --output-template template-export.yml"
+    ]
+
+phases:
+    install:
+        commands: *Install
+    pre_build:
+        commands: *Build
+    build:
+        commands: *Package
+
+artifacts:
+    type: zip
+    files:
+        - template-export.yml

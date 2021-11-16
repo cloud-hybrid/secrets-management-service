@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "secrets-rotation-service"
+Transform: [ "AWS::Serverless-2016-10-31" ]
+
+Globals: { Function: { Runtime: "nodejs14.x", Architectures: [ "x86_64" ] } }
+
+Resources:
+    List: # --> List All Secrets, Sanitized
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: !Join [ "/", [ "source", "list-secrets", "src", "index.handler" ] ]
+            MemorySize: 128
+            Events: { API: { Type: "Api", Properties: { Path: "/api/secrets", Method: "GET" } } }
+            # --> Events: *GET
+
+            Description: "List All Secrets, Sanitized"
+
+    Administration: # --> List All Secrets, Sanitized, Administrative
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: !Join [ "/", [ "source", "administration", "src", "index.handler" ] ]
+            MemorySize: 128
+            Events: { API: { Type: "Api", Properties: { Path: "/api/secrets/administration", Method: "GET" } } }
+
+            Description: "List All Secrets, Sanitized, Administrative"
+
+    Query: # --> Get Secret via AWS-ID, ARN, ID
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: !Join [ "/", [ "source", "get-secret", "src", "index.handler" ] ]
+            MemorySize: 128
+            Events: { API: { Type: "Api", Properties: { Path: "/api/secret", Method: "GET" } } }
+
+            Description: "Get Secret via AWS-ID, ARN, ID"
+
+Outputs:
+    Endpoint:
+        Description: "API Gateway URL"
+        Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

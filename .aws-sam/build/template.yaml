@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: secrets-rotation-service
+Transform:
+- AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Runtime: nodejs14.x
+    Architectures:
+    - x86_64
+Resources:
+  List:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler:
+        Fn::Join:
+        - /
+        - - source
+          - list-secrets
+          - src
+          - index.handler
+      MemorySize: 128
+      Events:
+        API:
+          Type: Api
+          Properties:
+            Path: /api/secrets
+            Method: GET
+      Description: List All Secrets, Sanitized
+      CodeUri: List
+  Administration:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler:
+        Fn::Join:
+        - /
+        - - source
+          - administration
+          - src
+          - index.handler
+      MemorySize: 128
+      Events:
+        API:
+          Type: Api
+          Properties:
+            Path: /api/secrets/administration
+            Method: GET
+      Description: List All Secrets, Sanitized, Administrative
+      CodeUri: Administration
+  Query:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler:
+        Fn::Join:
+        - /
+        - - source
+          - get-secret
+          - src
+          - index.handler
+      MemorySize: 128
+      Events:
+        API:
+          Type: Api
+          Properties:
+            Path: /api/secret
+            Method: GET
+      Description: Get Secret via AWS-ID, ARN, ID
+      CodeUri: Query
+Outputs:
+  Endpoint:
+    Description: API Gateway URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  Functions:
+    Description: Lambda Functions
+    Value:
+    - Reference:
+        Ref: List
+    - Reference:
+        Ref: Extended
+    - Reference:
+        Ref: Query

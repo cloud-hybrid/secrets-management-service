@@ -1,0 +1,23 @@
+{
+    "name": "@cloud-technology/secrets-management-service",
+    "description": "...",
+    "version": "0.1.4",
+    "private": false,
+    "devDependencies": {
+        "jest": "^26.6.3"
+    },
+    "scripts": {
+        "test": "jest",
+        "build": "sam build",
+        "start": "sam local start-api",
+        "mb": "aws s3 mb s3://secrets-rotation-service-cfn-stack-s3-bucket",
+        "rb": "aws s3 rm s3://secrets-rotation-service-cfn-stack-s3-bucket --recursive",
+        "deploy": "sam deploy --config-file .ci/configuration.toml --template-file template.yaml --debug",
+        "destroy": "aws cloudformation delete-stack --stack-name Secrets-Rotation-Service-CFN-Stack",
+        "wait.destroy": "aws cloudformation wait stack-delete-complete --stack-name Secrets-Rotation-Service-CFN-Stack",
+        "delete": "npm run destroy && npm run wait.destroy"
+    },
+    "dependencies": {
+        "@aws-sdk/client-secrets-manager": "^3.41.0"
+    }
+}
