@@ -1,11 +1,6 @@
-/// https://mng.workshop.aws
-
 const { Service, Response } = require("./../module.js");
 
 const Debug = (process.env.NODE_ENV !== "production");
-
-/// https://mng.workshop.aws/appconfig/lambda-validator.html
-/// Service.config.paramValidation = true;
 
 const Schema = (Properties) => {
     const $ = Properties?.ARN;
@@ -39,55 +34,15 @@ const Nil = () => {
     }, null, 4), 400);
 };
 
-/***
- *
- * @param request
- * @param validator
- *
- * @returns {{Response, validator}}
- *
- * @constructor
- *
- */
-
-const Deconstruct = (request, validator) => {
-    try {
-        const Data = request["queryStringParameters"];
-
-        if (!Data) return { validator: { Error: true }, Response: Nil() };
-
-        const Keys = Object.keys(Data);
-        const Index = (Keys.indexOf("ID") !== -1) ? Keys.indexOf("ID"): Keys.indexOf("id");
-
-        return { validator, Response: Data[Keys[Index]] };
-    } catch (e) {
-        validator.Error = true;
-        const $ = Response(JSON.stringify({
-            Status: 422,
-            Error: "Malformed Request",
-            Message: "Expected Query Parameter (:id|:ID) as Input",
-            Debug: (Debug) ? { Request, request }: null
-        }, null, 4), 422)
-
-        return {
-            validator, Response: $
-        }
-    }
-}
-
-/***
- *
- * @param identifier {String}
- *
- * @returns {Promise<{Response: {headers: {"X-Deployment-Version": (string|undefined), Server: string, "Content-Type": string}, body, statusCode: number}, validator: {Error: boolean}}|{headers: {"X-Deployment-Version": (string|undefined), Server: string, "Content-Type": string}, body, statusCode: number}>}
- *
- * @constructor
- *
- */
+const Malformation = () => {
+    return Response(JSON.stringify({
+        Status: 422,
+        Error: "Malformed Request, nil Parameter Assignment(s)",
+        Message: "Expected Query Parameter (ID) as Input, with String as Assignment",
+    }, null, 4), 422)
+};
 
 const Query = async (identifier) => {
-    if (identifier === "") return { Response: Empty(), validator: { Error: true } };
-
     try {
         const Secret = await Service.describeSecret({ SecretId: identifier });
         const Model = Schema(Secret);
@@ -102,17 +57,29 @@ const Query = async (identifier) => {
     }
 }
 
-console.log("Loading Function .....");
+console.log("Loading Function ...");
 exports.handler = async (event, context) => {
-    let validator = { Error: false };
+    console.trace("[Trace] Invocation Context" + ":", JSON.stringify(context));
 
-    console.info("Received Trigger Event" + ":", JSON.stringify(event, null, 4));
+    const Data = event["queryStringParameters"];
+    console.log("[Log] Query-String Parameters" + ":", Data);
 
-    const Data = Deconstruct(event, validator);
-    if (Data.validator?.Error === true) return Data.Response;
-    const ID = Data.Response;
+    if (!Data) return Nil();
 
-    const Secret = await Query(ID);
-    if (Secret.validator?.Error === true) return Secret.Response;
-    return Secret;
+    const Keys = Object.keys(Data);
+    console.debug("[Debug] Parameter Key(s)" + ":", Keys);
+
+    if (Keys.length === 0) return Empty();
+
+    const Index = (Keys.indexOf("ID") !== -1) ? Keys.indexOf("ID"): Keys.indexOf("id");
+    console.debug("[Debug] Parameter ID Index" + ":", Index);
+
+    if (Index === -1) return Malformation();
+
+    const ID = Data[Keys[Index]];
+    console.debug("[Debug] Parameter ID Assignment" + ":", ID);
+
+    if (ID === "") return Malformation();
+
+    return await Query(ID);
 }

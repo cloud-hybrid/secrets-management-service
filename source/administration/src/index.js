@@ -13,9 +13,9 @@ const Schema = (Properties) => {
     };
 }
 
-console.log("Loading Function .....");
-exports.handler = async (event) => {
-    console.info("Received Trigger Event" + ":", JSON.stringify(event, null, 4));
+console.log("Loading Function ...");
+exports.handler = async (event, context) => {
+    console.trace("[Trace] Invocation Context" + ":", JSON.stringify(context));
 
     const Container = [];
 

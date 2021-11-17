@@ -1,0 +1,1 @@
+https://github.com/aws-samples/aws-lambda-failures-logging-slack.git

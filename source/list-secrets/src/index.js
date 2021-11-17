@@ -15,10 +15,9 @@ const Schema = (Properties) => {
     };
 }
 
-console.log("Loading Function .....");
-/// export default async (event) => {
-module.exports.handler = async (event) => {
-    console.info("Received Trigger Event" + ":", JSON.stringify(event, null, 4));
+console.log("Loading Function ...");
+exports.handler = async (event, context) => {
+    console.trace("[Trace] Invocation Context" + ":", JSON.stringify(context));
 
     const Container = [];
 
@@ -40,11 +39,7 @@ module.exports.handler = async (event) => {
         });
     }
 
-    console.info("Secrets-List" + ":", Container);
-
     const Body = JSON.stringify({ Secrets: Container }, null, 4);
-
-    console.info("Data" + ":", Body);
 
     return Response(Body);
 }

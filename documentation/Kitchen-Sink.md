@@ -1,0 +1,1 @@
+https://github.com/aws/serverless-application-model/blob/develop/tests/translator/input/all_policy_templates.yaml

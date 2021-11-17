@@ -1,27 +1,10 @@
-/// import { SecretsManager as Client } from "@aws-sdk/client-secrets-manager";
-/// export const Service = new Client({
-///     apiVersion: "latest"
-/// });
-
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 const Client = SecretsManager;
 const Service = new Client({
-    apiVersion: "latest"
+    apiVersion: "latest",
+    logger: console
 });
 
-/***
- *
- * @param body {String | JSON}
- * @param status {Number}
- * @param headers {{}}
- *
- * @returns {{headers: {"X-Deployment-Version": string | undefined, Server: string, "Content-Type": string}, body, statusCode: number}}
- *
- * @constructor
- *
- */
-
-/// export const Response = (body, status = 200, headers = {}) => {
 const Response = (body, status = 200, headers = {}) => {
     return {
         statusCode: status, body, headers: {
@@ -37,16 +20,6 @@ const Response = (body, status = 200, headers = {}) => {
 module.exports.Client = Client;
 module.exports.Service = Service;
 module.exports.Response = Response;
-
-/***
- *
- * @type {{Response: (function((String|JSON), Number=, {}=): {headers: {"X-Deployment-Version": string | undefined, Server: string, "Content-Type": string}, body: String|JSON, statusCode: Number}), Service: Service, Client: Client}}
- *
- */
-
-/// export default {
-///     Client, Service, Response
-/// };
 
 module.exports.default = {
     Client, Service, Response

@@ -3,12 +3,18 @@
     "description": "...",
     "version": "0.1.4",
     "private": false,
-    "devDependencies": {
-        "jest": "^26.6.3"
+    "dependencies": {
+        "@aws-sdk/client-secrets-manager": "^3.41.0",
+        "@aws-sdk/client-dynamodb": "^3.41.0",
+        "@aws-sdk/node-http-handler": "^3.40.0"
+    },
+    "workspaces": {
+        "packages": [ "./source/*" ]
     },
     "scripts": {
         "test": "jest",
         "build": "sam build",
+        "package": "sam package --config-file .ci/configuration.toml",
         "start": "sam local start-api",
         "mb": "aws s3 mb s3://secrets-rotation-service-cfn-stack-s3-bucket",
         "rb": "aws s3 rm s3://secrets-rotation-service-cfn-stack-s3-bucket --recursive",
@@ -17,7 +23,14 @@
         "wait.destroy": "aws cloudformation wait stack-delete-complete --stack-name Secrets-Rotation-Service-CFN-Stack",
         "delete": "npm run destroy && npm run wait.destroy"
     },
-    "dependencies": {
-        "@aws-sdk/client-secrets-manager": "^3.41.0"
+    "devDependencies": {
+        "@aws-sdk/types": "^3.32.0",
+        "@types/node": "^14.0.23",
+        "typescript": "^4.0.2",
+        "ts-node": "^9.0.0",
+        "jest": "^26.6.3"
+    },
+    "jest": {
+        "rootDir": "unit-testing"
     }
 }

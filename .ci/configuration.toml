@@ -8,8 +8,12 @@ stack_name = "Secrets-Rotation-Service-CFN-Stack"
 s3_bucket = "secrets-rotation-service-cfn-stack-s3-bucket"
 s3_prefix = "Artifacts"
 region = "us-east-2"
-confirm_changeset = true
-capabilities = "CAPABILITY_IAM"
+confirm_changeset = false
+capabilities = [
+    "CAPABILITY_IAM",
+    "CAPABILITY_AUTO_EXPAND"
+]
+
 # --> tags = ""
 
 [default.build.parameters]
